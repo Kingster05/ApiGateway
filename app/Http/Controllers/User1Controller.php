@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserJob;
 use Illuminate\Http\Response;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
@@ -36,15 +37,41 @@ class User1Controller extends Controller
     {
 
     }
-
+    /**
+     * Obtains and show one user
+     * @return Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+    return $this->successResponse($this->user1Service-> obtainUser1($id));
+    }
     public function index()
     {
         //
         return $this->successResponse($this-> user1Service->obtainUsers1());
     }
 
-
+    /**
+     * Update an existing user
+     * @return Illuminate\Http\Response
+     */
+    public function update(Request $request,$id)
+    {
+        return $this->successResponse($this->user1Service->editUser1($request->all(),$id));
+    }
     public function add(Request $request){
-
+        return $this->successResponse($this-> user1Service->createUser1($request->all(),Response::HTTP_CREATED));
+    }
+    /**
+     * Remove an existing user
+     * @return Illuminate\Http\Response
+     */
+    public function patch(Request $request,$id)
+    {
+        return $this->successResponse($this->user1Service->editUsers1($request->all(),$id));
+    }
+    public function delete($id)
+    {
+    return $this->successResponse($this->user1Service-> deleteUser1($id));
     }
 }

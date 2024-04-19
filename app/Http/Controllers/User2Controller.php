@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Services\User2Service;
 use DB;
 
-class UserController extends Controller
+class User2Controller extends Controller
 {
     use ApiResponser;
 
@@ -36,13 +36,41 @@ class UserController extends Controller
     {
 
     }
-
+/**
+     * Obtains and show one user
+     * @return Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+    return $this->successResponse($this->user2Service-> obtainUser2($id));
+    }
     public function index()
     {
-
+        //
+        return $this->successResponse($this-> user2Service->obtainUsers2());
     }
 
+    /**
+     * Update an existing user
+     * @return Illuminate\Http\Response
+     */
+    public function update(Request $request,$id)
+    {
+        return $this->successResponse($this->user2Service->editUser2($request->all(),$id));
+    }
     public function add(Request $request){
-
+        return $this->successResponse($this-> user2Service->createUser2($request->all(),Response::HTTP_CREATED));
+    }
+    /**
+     * Remove an existing user
+     * @return Illuminate\Http\Response
+     */
+    public function patch(Request $request,$id)
+    {
+        return $this->successResponse($this->user2Service->editUsers2($request->all(),$id));
+    }
+    public function delete($id)
+    {
+    return $this->successResponse($this->user2Service-> deleteUser2($id));
     }
 }
