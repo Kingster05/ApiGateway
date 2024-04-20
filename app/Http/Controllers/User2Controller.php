@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Response;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
-use App\Models\User;
 use App\Services\User2Service;
+use App\Models\User;
+use App\Models\UserJob;
 use DB;
 
 class User2Controller extends Controller
@@ -56,18 +57,71 @@ class User2Controller extends Controller
      */
     public function update(Request $request,$id)
     {
-        return $this->successResponse($this->user2Service->editUser2($request->all(),$id));
+        $rules = [
+            'username' => 'max:20',
+            'password' => 'max:20',
+            'gender' => 'in:Male,Female',
+            'jobid' => 'required|numeric|min:1|not_in:0',
+            ];
+
+            $this->validate($request, $rules);
+
+            // validate if Jobid is found in the table tbluserjob
+            $userjob = UserJob::findOrFail($request->jobid);
+            $user = User::findOrFail($id);
+            $user->fill($request->all());
+
+            // if no changes happen
+            if ($user->isClean()) {
+            return $this->errorResponse('At least one value must change', Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $user->save();
+            return $this->successResponse($user);
     }
     public function add(Request $request){
-        return $this->successResponse($this-> user2Service->createUser2($request->all(),Response::HTTP_CREATED));
-    }
+        $rules = [
+            'username' => 'required|max:20',
+            'password' => 'required|max:20',
+            'gender' => 'required|in:Male,Female',
+            'jobid' => 'required|numeric|min:1|not_in:0',
+            ];
+
+            $this->validate($request,$rules);
+
+            // validate if Jobid is found in the table tbluserjob
+            $userjob = UserJob::findOrFail($request->jobid);
+            $user = User::create($request->all());
+
+            return $this->successResponse($user, Response::HTTP_CREATED);
+        }
     /**
      * Remove an existing user
      * @return Illuminate\Http\Response
      */
     public function patch(Request $request,$id)
     {
-        return $this->successResponse($this->user2Service->editUsers2($request->all(),$id));
+        $rules = [
+            'username' => 'max:20',
+            'password' => 'max:20',
+            'gender' => 'in:Male,Female',
+            'jobid' => 'required|numeric|min:1|not_in:0',
+            ];
+
+            $this->validate($request, $rules);
+
+            // validate if Jobid is found in the table tbluserjob
+            $userjob = UserJob::findOrFail($request->jobid);
+            $user = User::findOrFail($id);
+            $user->fill($request->all());
+
+            // if no changes happen
+            if ($user->isClean()) {
+            return $this->errorResponse('At least one value must change', Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $user->save();
+            return $this->successResponse($user);
     }
     public function delete($id)
     {
